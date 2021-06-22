@@ -36,7 +36,8 @@ void rock_machine_mobuffer_state::send(rock_machine* rock) {
         strcat(text_message, "\r");
         puts(text_message);
         // Send the message
-        uart_puts(RB_UART_ID, text_message);        
+        // uart_puts(RB_UART_ID, text_message);
+        rock->write(text_message);        
     }
     else {
         puts(rock->message);

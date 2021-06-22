@@ -32,7 +32,8 @@ void rock_machine_flowctrl_state::send(rock_machine* rock) {
     rock->_timeout_id = add_alarm_in_ms(ATK0_TIMEOUT, alarm_callback, NULL, false);
 
     // send the message
-    uart_puts(RB_UART_ID, ATK0);
+    // uart_puts(RB_UART_ID, ATK0);
+    rock->write(ATK0);
     puts(ATK0);
 
     change_state(rock, rock_machine_flowctrl_wait_state::instance());

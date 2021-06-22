@@ -23,7 +23,7 @@ int64_t alarm_callback(alarm_id_t id, void *user_data) {
     return 0;
 }
 
-rock_machine::rock_machine() {
+rock_machine::rock_machine(serial& uart): _serial(uart) {
     // Starting state
     _state = rock_machine_idle_wait_state::instance(); 
 }
@@ -35,6 +35,10 @@ void rock_machine::run() {
         timeout_fired = false;
         repeat();
     }
+}
+
+void rock_machine::write(const char* s) {
+    _serial.uart_puts(s);
 }
 
 void rock_machine::start() {

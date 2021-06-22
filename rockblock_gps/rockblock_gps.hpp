@@ -14,12 +14,11 @@
 #include "pico/stdlib.h"
 
 #define UART1_ID uart1
-#define RB_UART_ID UART1_ID
-#define RB_BAUD_RATE 19200
-#define GPS_BAUD_RATE 9600
-
 #define UART1_TX_PIN 4
 #define UART1_RX_PIN 5
+
+#define RB_BAUD_RATE 19200
+#define GPS_BAUD_RATE 9600
 
 #define OUTPUT_INTERVAL 5000 // ms
 

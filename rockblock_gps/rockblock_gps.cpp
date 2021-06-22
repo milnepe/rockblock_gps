@@ -19,10 +19,9 @@
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
 #include "rockblock_gps.hpp"
-#include "rock_machine.hpp"
 #include "gps_machine.hpp"
 #include "pico/serial.hpp"
-
+#include "pico/rock_machine.hpp"
 
 #define SENTENCE_SIZE 128
 #define RESPONSE_SIZE 32
@@ -49,23 +48,22 @@ bool led_repeating_timer_callback(struct repeating_timer *t) {
     return true;
 }
 
+serial serial0;
+serial serial1(UART1_ID, UART1_TX_PIN, UART1_RX_PIN);
+
 // Create a RockBLOCK machine
-rock_machine rock;
+rock_machine rock(serial1);
 
 int main()
 {
     stdio_init_all();
 
-    serial serial0;
-
     // Initialise uart0 for use with GPS on default GPIO
     // TX GP0, RX GP1
     serial0.init(GPS_BAUD_RATE);
 
-    // Setup RockBLOCK (uart 1)
-    uart_init(UART1_ID, RB_BAUD_RATE);
-    gpio_set_function(UART1_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART1_RX_PIN, GPIO_FUNC_UART);
+    // Ititialise RockBLOCK on uart1
+    serial1.init(RB_BAUD_RATE);
 
     // Turn off FIFO's
     uart_set_fifo_enabled(UART1_ID, false);

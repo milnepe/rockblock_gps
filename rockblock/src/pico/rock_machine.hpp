@@ -20,7 +20,7 @@
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
 #include "hardware/irq.h"
-#include "rockblock_gps.hpp"
+#include "pico/serial.hpp"
 
 #define MAX_MESSAGE_SIZE 50
 #define BAD_TIMEOUT 2000 // ms
@@ -48,18 +48,20 @@ class rock_machine {
         alarm_id_t _timeout_id;
         int message_count = 1;
         const char* message;
-        rock_machine();
+        rock_machine(serial& uart);
         void start();        
         void send();
         void send_ok(char*);
         void repeat(); 
         void run();
         uint get_state_id();
+        void write(const char* s);         
     private:
         friend class rock_machine_state;
-        void change_state(rock_machine_state*);
+        void change_state(rock_machine_state*);       
     private:
         rock_machine_state* _state;
+        serial& _serial;
 };
 
 class rock_machine_state {
