@@ -19,5 +19,6 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.3
 
+add_subdirectory(serial)
 add_subdirectory(rockblock_gps)
 

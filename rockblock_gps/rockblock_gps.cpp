@@ -21,6 +21,7 @@
 #include "rockblock_gps.hpp"
 #include "rock_machine.hpp"
 #include "gps_machine.hpp"
+#include "pico/serial.hpp"
 
 
 #define SENTENCE_SIZE 128
@@ -53,13 +54,13 @@ rock_machine rock;
 
 int main()
 {
-    stdio_init_all(); 
+    stdio_init_all();
 
-    // Setup GPS (uart 0) - FIFO's on by default
-    uart_init(UART0_ID, GPS_BAUD_RATE);
-    gpio_set_function(UART0_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART0_RX_PIN, GPIO_FUNC_UART);
-    // End GPS uart setup
+    serial serial0;
+
+    // Initialise uart0 for use with GPS on default GPIO
+    // TX GP0, RX GP1
+    serial0.init(GPS_BAUD_RATE);
 
     // Setup RockBLOCK (uart 1)
     uart_init(UART1_ID, RB_BAUD_RATE);
@@ -92,8 +93,8 @@ int main()
     while(1) {
 
         // Read GPS stream
-        while (uart_is_readable(UART0_ID)) {
-            char ch = uart_getc(UART0_ID);
+        while (serial0.uart_is_readable()) {
+            char ch = serial0.uart_getc();
             gps_sentence[gps_chars_rxed++] = ch;
             if (ch == '\n' || gps_chars_rxed == SENTENCE_SIZE - 1) {
                 gps_sentence[gps_chars_rxed] = '\0';
