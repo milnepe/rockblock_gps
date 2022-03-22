@@ -19,21 +19,44 @@
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
 #include "rockblock_gps.hpp"
-#include "gps_machine.hpp"
+// #include "gps_machine.hpp"
 #include "pico/serial.hpp"
 #include "pico/rock_machine.hpp"
 
+#define UART1_ID uart1
+#define UART1_TX_PIN 4
+#define UART1_RX_PIN 5
+
+#define RB_BAUD_RATE 19200
+#define GPS_BAUD_RATE 9600
+
+#define OUTPUT_INTERVAL 5000 // ms
+
+#define BUTTON_PIN 15
+#define LED_AMBER 14
+#define LED_RED 16
+#define LED_GREEN 18
+#define LED_PIN PICO_DEFAULT_LED_PIN
+
 #define SENTENCE_SIZE 128
 #define RESPONSE_SIZE 32
+#define GPRMC_CHARACTERS 44
 #define MAX_MESSAGE_COUNT_SIZE 4
-#define NMEA_CHARACTERS 44
+
+// const char* construct_message(char *message_buf, char* message, int message_count);
+
+void led_init();
+
+void switch_led(uint state);
+
+bool get_GPRMC(char* sentence_buf, char* gprmc_buf);
 
 static char rd_message_buf[MAX_MESSAGE_SIZE];
 static char rb_response_buf[RESPONSE_SIZE];
 static int rd_chars_rxed = 0;
 
-static char gps_sentence[SENTENCE_SIZE];
-static char gps_buffer[SENTENCE_SIZE];
+static char gps_sentence[SENTENCE_SIZE]; // Raw NMEA buffer
+static char gps_buffer[GPRMC_CHARACTERS + 20];  // GPRMC buffer (64 bytes)
 static int gps_chars_rxed = 0;
 volatile bool gps_updated = false;
 
@@ -89,6 +112,7 @@ int main()
     gpio_set_irq_enabled_with_callback(BUTTON_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);  
 
     while(1) {
+        static bool print_fg = false;
 
         // Read GPS stream
         while (serial0.uart_is_readable()) {
@@ -97,22 +121,27 @@ int main()
             if (ch == '\n' || gps_chars_rxed == SENTENCE_SIZE - 1) {
                 gps_sentence[gps_chars_rxed] = '\0';
                 gps_chars_rxed = 0;
-                get_GPRMC(gps_sentence, gps_buffer);
+                print_fg = get_GPRMC(gps_sentence, gps_buffer);
             }
+            break;
         }
 
-        rock.message = construct_message(rd_message_buf, gps_buffer, rock.message_count);        
+        // rock.message = construct_message(rd_message_buf, gps_buffer, rock.message_count);
+        if (print_fg) {
+            print_fg = false;
+            puts(gps_buffer); 
+        }      
 
         // Send a message
-        rock.run();
+        // rock.run();
 
         // Get state for LED's and USB debug output
-        volatile uint current_state = rock.get_state_id();
-        if (current_state != previous_state) {
-            puts(state_str[current_state]);
-            switch_led(current_state);
-        }
-        previous_state = current_state;
+        // volatile uint current_state = rock.get_state_id();
+        // if (current_state != previous_state) {
+        //     puts(state_str[current_state]);
+        //     switch_led(current_state);
+        // }
+        // previous_state = current_state;
 
         // // Put anything else non-blocking to be run here
         // puts("Do other stuff...\r\n");
@@ -139,18 +168,30 @@ void on_uart1_rx() {
     }
 }
 
-const char* construct_message(char *message_buf, char* message, int message_count) {
-    char message_count_buf[MAX_MESSAGE_COUNT_SIZE] = {'\0'};
-    itoa(message_count, message_count_buf, 10);  // base 10
-    strcpy(message_buf, message_count_buf);
-    strcat(message_buf, ",");
-    size_t n = NMEA_CHARACTERS;
-    if(n < MAX_MESSAGE_SIZE - strlen(message_buf)) {
-        strncat(message_buf, message, n);  // must truncate message before \r\n
+// const char* construct_message(char* message_buf, char* message, int message_count) {
+//     char message_count_buf[MAX_MESSAGE_COUNT_SIZE] = {'\0'};
+//     itoa(message_count, message_count_buf, 10);  // base 10
+//     strcpy(message_buf, message_count_buf);
+//     strcat(message_buf, ",");
+//     size_t n = GPRMC_CHARACTERS;
+//     if(n < MAX_MESSAGE_SIZE - strlen(message_buf)) {
+//         strncat(message_buf, message, n);  // must truncate message before \r\n
+//     }
+//     else {
+//         puts("Max message length exceeded!");
+//     }
+//     return message_buf;
+// }
+
+// Put a valid partial NMEA $GPRMC sentence into the buffer
+// Returns true if specific sentence is found
+bool get_GPRMC(char* sentence_buf, char* gprmc_buf) {
+    if(strstr(sentence_buf, "$GPRMC") != NULL) {
+        // memcpy(gprmc_buf, sentence_buf, strlen(sentence_buf) + 1);
+        memcpy(gprmc_buf, sentence_buf, GPRMC_CHARACTERS);        
+        return true;    
     }
-    else {
-        puts("Max message length exceeded!");
-    }
+    return false;
 }
 
 void led_init() {
