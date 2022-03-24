@@ -10,7 +10,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "rock_machine.hpp"
+#include "rock_machine_state.hpp"
 
 #define ATK0 "AT&K0\r"
 #define ATK0_TIMEOUT 10000  // message timeout (ms)

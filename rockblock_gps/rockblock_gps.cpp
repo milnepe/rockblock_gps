@@ -133,15 +133,15 @@ int main()
         }      
 
         // Send a message
-        // rock.run();
+        rock.run();
 
         // Get state for LED's and USB debug output
-        // volatile uint current_state = rock.get_state_id();
-        // if (current_state != previous_state) {
-        //     puts(state_str[current_state]);
-        //     switch_led(current_state);
-        // }
-        // previous_state = current_state;
+        volatile uint current_state = rock.get_state_id();
+        if (current_state != previous_state) {
+            puts(state_str[current_state]);
+            switch_led(current_state);
+        }
+        previous_state = current_state;
 
         // // Put anything else non-blocking to be run here
         // puts("Do other stuff...\r\n");

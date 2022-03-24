@@ -10,7 +10,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "rock_machine.hpp"
+#include "rock_machine_state.hpp"
 
 #define SBDIX "AT+SBDIX\r"
 // #define SBDIX_TIMEOUT 10000  // session timeout (ms)

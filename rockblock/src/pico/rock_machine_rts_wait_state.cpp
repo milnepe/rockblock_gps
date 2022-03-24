@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "rock_machine.hpp"
+#include "rock_machine_state.hpp"
 
 // Setup a singleton
 rock_machine_state* rock_machine_rts_wait_state::_instance = 0;

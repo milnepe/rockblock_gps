@@ -2,6 +2,7 @@ add_library(
     pico_rockmachine
     src/pico/rock_machine.hpp
     src/pico/rock_machine.cpp
+    src/pico/rock_machine_state.hpp
     src/pico/rock_machine_state.cpp
     src/pico/rock_machine_idle_wait_state.cpp
     src/pico/rock_machine_rts_state.cpp
