@@ -2,16 +2,9 @@
     RockBLOCK Machine MO Buffer Wait State Implementation
 
     Wait for MO buffer load acknowledgement
-
     Return via failure state on error
     
 */
-
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
 
 #include "rock_machine_state.hpp"
 
@@ -39,7 +32,7 @@ void rock_machine_mobuffer_wait_state::repeat(rock_machine* rock) {
     // set a timeout
     rock->_timeout_id = add_alarm_in_ms(BAD_TIMEOUT, alarm_callback, NULL, false);
 
-    puts("Bad MO Buffer load opp");    
+    puts("MO Buffer load timeout");    
 
     change_state(rock, rock_machine_sendbad_wait_state::instance());    
 }

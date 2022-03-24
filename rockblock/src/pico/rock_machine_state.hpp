@@ -6,12 +6,6 @@
   
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #ifndef rock_machine_state_hpp
 #define rock_machine_state_hpp
 

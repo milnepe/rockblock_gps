@@ -5,12 +5,6 @@
     
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include "rock_machine_state.hpp"
 
 #define SBDWT "AT+SBDWT="
@@ -34,10 +28,9 @@ void rock_machine_mobuffer_state::send(rock_machine* rock) {
         strcpy(text_message, SBDWT);
         strcat(text_message, rock->message);
         strcat(text_message, "\r");
-        puts(text_message);
         // Send the message
-        // uart_puts(RB_UART_ID, text_message);
-        rock->write(text_message);        
+        rock->write(text_message);
+        puts(text_message);        
     }
     else {
         puts(rock->message);

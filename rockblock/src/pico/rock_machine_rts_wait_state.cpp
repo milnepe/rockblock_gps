@@ -6,12 +6,6 @@
     
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include "rock_machine_state.hpp"
 
 // Setup a singleton
@@ -33,7 +27,8 @@ void rock_machine_rts_wait_state::send_ok(rock_machine* rock, char* response) {
     } 
 }
 
-// Go back to state on timeout
+// Return to RTS state on timeout - this is not necessarily an error
+// the RockBLOCK may not be ready yet, so keep trying
 void rock_machine_rts_wait_state::repeat(rock_machine* rock) {
     change_state(rock, rock_machine_rts_state::instance());
 }

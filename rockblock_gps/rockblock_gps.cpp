@@ -6,20 +6,11 @@
 
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
-// #include "rockblock_gps.hpp"
-// #include "gps_machine.hpp"
 #include "pico/serial.hpp"
 #include "pico/rock_machine.hpp"
 
@@ -138,10 +129,11 @@ int main()
         // Get state for LED's and USB debug output
         volatile uint current_state = rock.get_state_id();
         if (current_state != previous_state) {
+            previous_state = current_state;
             puts(state_str[current_state]);
             switch_led(current_state);
         }
-        previous_state = current_state;
+
 
         // // Put anything else non-blocking to be run here
         // puts("Do other stuff...\r\n");

@@ -4,12 +4,6 @@
     Send start extended session command with timeout
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include "rock_machine_state.hpp"
 
 #define SBDIX "AT+SBDIX\r"
@@ -34,8 +28,8 @@ void rock_machine_send_state::send(rock_machine* rock) {
     rock->_timeout_id = add_alarm_in_ms(SBDIX_TIMEOUT, alarm_callback, NULL, false);
 
     // send the message
-    // uart_puts(RB_UART_ID, SBDIX);
     rock->write(SBDIX);
+    puts(SBDIX);
 
     change_state(rock, rock_machine_send_wait_state::instance());
 }

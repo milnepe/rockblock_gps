@@ -5,12 +5,6 @@
     
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include "rock_machine_state.hpp"
 
 #define RTS_CMD "AT\r"
@@ -33,11 +27,9 @@ void rock_machine_rts_state::send(rock_machine* rock) {
     rock->_timeout_id = add_alarm_in_ms(RTS_TIMEOUT, alarm_callback, NULL, false);
 
     // send the message
-    // uart_puts(RB_UART_ID, RTS_CMD);
     rock->write(RTS_CMD);
     puts(RTS_CMD);
 
     // Change to next state    
     change_state(rock, rock_machine_rts_wait_state::instance()); 
-
 }

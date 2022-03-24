@@ -4,12 +4,6 @@
   
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include "rock_machine_state.hpp"
 
 void rock_machine_state::start(rock_machine*) {}

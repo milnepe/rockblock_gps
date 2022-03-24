@@ -3,22 +3,15 @@
     
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #include <stdio.h>
 #include <string.h>
 #include "rock_machine.hpp"
-
 
 volatile bool timeout_fired = false;
 
 // Setup a timeout callback
 int64_t alarm_callback(alarm_id_t id, void *user_data) {
-    puts("Timer!");
+    puts("Timeout!");
     timeout_fired = true;
     return 0;
 }
