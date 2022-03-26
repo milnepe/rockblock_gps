@@ -27,8 +27,9 @@ void rock_machine_rts_state::send(rock_machine* rock) {
     rock->_timeout_id = add_alarm_in_ms(RTS_TIMEOUT, alarm_callback, NULL, false);
 
     // send the message
-    rock->write(RTS_CMD);
+    puts(rock->get_message());
     puts(RTS_CMD);
+    rock->write(RTS_CMD);
 
     // Change to next state    
     change_state(rock, rock_machine_rts_wait_state::instance()); 

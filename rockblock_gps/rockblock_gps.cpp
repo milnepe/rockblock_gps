@@ -1,8 +1,7 @@
 /*
     RockBLOCK GPS Client Implementation
     
-    Reads GPS module and sends position over satellite link
-    
+    Reads GPS module and sends position over satellite link 
 
 */
 
@@ -29,12 +28,16 @@
 #define LED_GREEN 18
 #define LED_PIN PICO_DEFAULT_LED_PIN
 
+// GPS
 #define SENTENCE_SIZE 128
 #define RESPONSE_SIZE 32
 #define GPRMC_CHARACTERS 44
-#define MAX_MESSAGE_COUNT_SIZE 4
 
-// const char* construct_message(char *message_buf, char* message, int message_count);
+// RockBLOCK
+#define MAX_MESSAGE_SIZE 50  // 1 credit
+#define MAX_MESSAGE_COUNT 10  // Limit number of messages
+
+bool construct_message();
 
 void led_init();
 
@@ -42,8 +45,8 @@ void switch_led(uint state);
 
 bool get_GPRMC(char* sentence_buf, char* gprmc_buf);
 
-static char rd_message_buf[MAX_MESSAGE_SIZE];
-static char rb_response_buf[RESPONSE_SIZE];
+static char message_buffer[MAX_MESSAGE_SIZE] = "Payload";
+static char rb_response_buffer[RESPONSE_SIZE];
 static int rd_chars_rxed = 0;
 
 static char gps_sentence[SENTENCE_SIZE]; // Raw NMEA buffer
@@ -66,7 +69,7 @@ serial serial0;
 serial serial1(UART1_ID, UART1_TX_PIN, UART1_RX_PIN);
 
 // Create a RockBLOCK machine
-rock_machine rock(serial1);
+rock_machine rock(serial1, message_buffer);
 
 int main()
 {
@@ -94,13 +97,13 @@ int main()
 
     static uint previous_state = MOBUFFER;
 
-    led_init(); 
+    led_init();
 
-    puts("RockBLOCK GPS test\r\n");
+    gpio_set_irq_enabled_with_callback(BUTTON_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
 
     sleep_ms(10000);  // let GPS / RockBLOCK warm up
 
-    gpio_set_irq_enabled_with_callback(BUTTON_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);  
+    puts("RockBLOCK GPS test\r\n");
 
     while(1) {
         static bool print_fg = false;
@@ -117,10 +120,9 @@ int main()
             break;
         }
 
-        // rock.message = construct_message(rd_message_buf, gps_buffer, rock.message_count);
         if (print_fg) {
             print_fg = false;
-            puts(gps_buffer); 
+            puts(gps_buffer);
         }      
 
         // Send a message
@@ -144,36 +146,40 @@ int main()
 
 // Button callback handler - starts a new message session
 void gpio_callback(uint gpio, uint32_t events) {
-    rock.start();
+    if (construct_message()) {
+        rock.start();
+    }
 }
 
 // RockBLOCK RX interrupt handler
 void on_uart1_rx() {
     while (uart_is_readable(UART1_ID)) {
         char ch = uart_getc(UART1_ID);
-        rb_response_buf[rd_chars_rxed++] = ch;
+        rb_response_buffer[rd_chars_rxed++] = ch;
         if (ch == '\r' || rd_chars_rxed == RESPONSE_SIZE - 1) {
             rd_chars_rxed = 0;
-            rock.send_ok(rb_response_buf);
-            memset(rb_response_buf, 0, sizeof rb_response_buf);
+            rock.send_ok(rb_response_buffer);
+            memset(rb_response_buffer, 0, sizeof rb_response_buffer);
         }
     }
 }
 
-// const char* construct_message(char* message_buf, char* message, int message_count) {
-//     char message_count_buf[MAX_MESSAGE_COUNT_SIZE] = {'\0'};
-//     itoa(message_count, message_count_buf, 10);  // base 10
-//     strcpy(message_buf, message_count_buf);
-//     strcat(message_buf, ",");
-//     size_t n = GPRMC_CHARACTERS;
-//     if(n < MAX_MESSAGE_SIZE - strlen(message_buf)) {
-//         strncat(message_buf, message, n);  // must truncate message before \r\n
-//     }
-//     else {
-//         puts("Max message length exceeded!");
-//     }
-//     return message_buf;
-// }
+// Construct message to be sent
+bool construct_message() {
+    uint i = rock.get_message_count();
+    if (i < MAX_MESSAGE_COUNT) {
+        // Start message with message count
+        itoa(rock.get_message_count(), message_buffer, 10);
+        // Add a GPS reading
+        if (sizeof(message_buffer) - strlen(message_buffer) > strlen(gps_buffer) + 1) {
+            strcat(message_buffer, ",");
+            strcat(message_buffer, gps_buffer);
+            return true;
+        }
+    }
+    puts("Maximum message count");
+    return false;
+}
 
 // Put a valid partial NMEA $GPRMC sentence into the buffer
 // Returns true if specific sentence is found

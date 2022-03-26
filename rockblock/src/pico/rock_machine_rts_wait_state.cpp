@@ -30,5 +30,6 @@ void rock_machine_rts_wait_state::send_ok(rock_machine* rock, char* response) {
 // Return to RTS state on timeout - this is not necessarily an error
 // the RockBLOCK may not be ready yet, so keep trying
 void rock_machine_rts_wait_state::repeat(rock_machine* rock) {
+    puts("RockBLOCK not ready");
     change_state(rock, rock_machine_rts_state::instance());
 }

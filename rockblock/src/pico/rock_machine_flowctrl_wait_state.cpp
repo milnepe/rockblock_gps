@@ -21,9 +21,10 @@ rock_machine_state* rock_machine_flowctrl_wait_state::instance() {
 // Change to next state
 void rock_machine_flowctrl_wait_state::send_ok(rock_machine* rock, char* response) {
     if(get_response(response, "OK")) {
-        cancel_alarm(rock->_timeout_id);
-        puts(response);                    
-        change_state(rock, rock_machine_mobuffer_state::instance());
+        cancel_alarm(rock->_timeout_id);                  
+        puts(response);
+        
+        change_state(rock, rock_machine_mobuffer_state::instance()); 
     }  
 }
 
@@ -31,7 +32,6 @@ void rock_machine_flowctrl_wait_state::send_ok(rock_machine* rock, char* respons
 void rock_machine_flowctrl_wait_state::repeat(rock_machine* rock) {
     // set a timeout
     rock->_timeout_id = add_alarm_in_ms(BAD_TIMEOUT, alarm_callback, NULL, false);
-
     puts("Cancel flowcontrol timeout");
 
     change_state(rock, rock_machine_sendbad_wait_state::instance());

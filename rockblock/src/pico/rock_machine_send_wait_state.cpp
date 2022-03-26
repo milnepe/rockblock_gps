@@ -39,7 +39,6 @@ void rock_machine_send_wait_state::send_ok(rock_machine* rock, char* response) {
 void rock_machine_send_wait_state::repeat(rock_machine* rock) {
     // set a timeout
     rock->_timeout_id = add_alarm_in_ms(BAD_TIMEOUT, alarm_callback, NULL, false);
-
     puts("Transmission timed out");
 
     change_state(rock, rock_machine_sendbad_wait_state::instance());    

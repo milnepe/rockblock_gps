@@ -28,8 +28,9 @@ void rock_machine_send_state::send(rock_machine* rock) {
     rock->_timeout_id = add_alarm_in_ms(SBDIX_TIMEOUT, alarm_callback, NULL, false);
 
     // send the message
-    rock->write(SBDIX);
     puts(SBDIX);
+    rock->write(SBDIX);
+
 
     change_state(rock, rock_machine_send_wait_state::instance());
 }

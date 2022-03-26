@@ -41,8 +41,8 @@ class rock_machine_state {
         virtual void repeat(rock_machine*);
         uint get_state_id() {return _state_id;} 
     protected:
-        uint _state_id = IDLE;
         void change_state(rock_machine*, rock_machine_state*);
+        uint _state_id = IDLE;
     };
 
 class rock_machine_idle_wait_state : public rock_machine_state {

@@ -31,8 +31,7 @@ void rock_machine_mobuffer_wait_state::send_ok(rock_machine* rock, char* respons
 void rock_machine_mobuffer_wait_state::repeat(rock_machine* rock) {
     // set a timeout
     rock->_timeout_id = add_alarm_in_ms(BAD_TIMEOUT, alarm_callback, NULL, false);
-
-    puts("MO Buffer load timeout");    
+    puts("MO buffer load timeout");    
 
     change_state(rock, rock_machine_sendbad_wait_state::instance());    
 }

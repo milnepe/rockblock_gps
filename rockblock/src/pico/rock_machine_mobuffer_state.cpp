@@ -5,9 +5,9 @@
     
 */
 
-#include "rock_machine_state.hpp"
+#include "rock_machine.hpp"
 
-#define SBDWT "AT+SBDWT="
+#define SBDWT_CMD "AT+SBDWT="
 #define SBDWT_TIMEOUT 10000  // message timeout (ms)
 
 // Setup a singleton
@@ -20,21 +20,20 @@ rock_machine_state* rock_machine_mobuffer_state::instance() {
     return _instance;
 }
 
-// Send the message and return to Idle
+// Load MO buffer
 void rock_machine_mobuffer_state::send(rock_machine* rock) {
-    // Construct text message
-    if(strlen(rock->message) < MAX_MESSAGE_SIZE) {
-        char text_message[MAX_MESSAGE_SIZE + 10] = {0};
-        strcpy(text_message, SBDWT);
-        strcat(text_message, rock->message);
-        strcat(text_message, "\r");
+    // Construct cmd string
+    char mo_buffer[MO_BUFFER_SIZE];
+    if (sizeof(mo_buffer) > strlen(rock->get_message()) + sizeof(SBDWT_CMD) + 1) {
+        strcpy(mo_buffer, SBDWT_CMD);
+        strcat(mo_buffer, rock->get_message());
+        strcat(mo_buffer, "\r");
+ 
         // Send the message
-        rock->write(text_message);
-        puts(text_message);        
-    }
-    else {
-        puts(rock->message);
-        puts("Message length exceeded");  // Error condition STOP!!
+        puts(mo_buffer); 
+        rock->write(mo_buffer);
+    } else {
+        puts("Message too long");
     }
 
     // set a timeout

@@ -17,9 +17,11 @@
 #include "pico/serial.hpp"
 #include "rock_machine_state.hpp"
 
-#define MAX_MESSAGE_SIZE 50
+
 #define BAD_TIMEOUT 2000 // ms
 #define GOOD_TIMEOUT 2000 // ms
+
+#define MO_BUFFER_SIZE 64  // Absolute max 340 bytes
 
 int64_t alarm_callback(alarm_id_t id, void *user_data);
 
@@ -30,21 +32,25 @@ class rock_machine_state;
 class rock_machine {
     public:
         alarm_id_t _timeout_id;
-        int message_count = 1;
-        const char* message;
-        rock_machine(serial& uart);
+        // const char* message;
+
+        rock_machine(serial& uart, char* message);
         void start();        
         void send();
         void send_ok(char*);
         void repeat(); 
         void run();
         uint get_state_id();
-        void write(const char* s);         
+        void write(const char* s);
+        const char* get_message();
+        uint get_message_count();
     private:
         friend class rock_machine_state;
-        void change_state(rock_machine_state*);       
+        void change_state(rock_machine_state*);      
     private:
         rock_machine_state* _state;
         serial& _serial;
+        char* _message;
+        uint _message_count = 1;
 };
 #endif

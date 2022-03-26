@@ -16,9 +16,10 @@ int64_t alarm_callback(alarm_id_t id, void *user_data) {
     return 0;
 }
 
-rock_machine::rock_machine(serial& uart): _serial(uart) {
+rock_machine::rock_machine(serial& uart, char* message): _serial(uart) {
     // Starting state
-    _state = rock_machine_idle_wait_state::instance(); 
+    _state = rock_machine_idle_wait_state::instance();
+    _message = message; 
 }
 
 void rock_machine::run() {
@@ -54,6 +55,14 @@ void rock_machine::change_state(rock_machine_state* state) {
 
 uint rock_machine::get_state_id() {
     return _state->get_state_id();
+}
+
+const char* rock_machine::get_message() {
+    return this->_message;
+}
+
+uint rock_machine::get_message_count() {
+    return this->_message_count;
 }
 
 // Parse a response
