@@ -1,7 +1,7 @@
 /*
     RockBLOCK Machine Send State Implementation
     
-    Send start extended session command with timeout
+    Start an extended SBD session
 */
 
 #include "rock_machine_state.hpp"

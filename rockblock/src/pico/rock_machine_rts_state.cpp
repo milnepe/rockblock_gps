@@ -1,7 +1,7 @@
 /*
     RockBLOCK Machine Ready To Send State Implementation
 
-    Send an AT command with timeout
+    Send an AT command to check if modem is ready
     
 */
 

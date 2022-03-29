@@ -21,8 +21,6 @@
 #define BAD_TIMEOUT 2000 // ms
 #define GOOD_TIMEOUT 2000 // ms
 
-#define MO_BUFFER_SIZE 64  // Absolute max 340 bytes
-
 int64_t alarm_callback(alarm_id_t id, void *user_data);
 
 bool get_response(char* response_buf, const char* string);

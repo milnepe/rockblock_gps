@@ -144,7 +144,7 @@ class rock_machine_send_wait_state : public rock_machine_state {
         virtual void send_ok(rock_machine*, char* response);
         virtual void repeat(rock_machine*);
     private:
-        rock_machine_send_wait_state() {_state_id = MOBUFFERWAIT;}
+        rock_machine_send_wait_state() {_state_id = SENDWAIT;}
         static rock_machine_state* _instance;
 };
 #endif

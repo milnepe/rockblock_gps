@@ -1,7 +1,7 @@
 /*
     RockBLOCK Machine Send Wait State Implementation
     
-    Wait for a transmission acknowledgement
+    Wait for a MO transmission acknowledgement
 
 */
 

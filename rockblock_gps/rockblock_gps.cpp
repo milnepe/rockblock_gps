@@ -108,8 +108,8 @@ int main()
     while(1) {
         static bool print_fg = false;
 
-        // Read GPS stream
-        while (serial0.uart_is_readable()) {
+        // Read GPS stream             
+        while (serial0.uart_is_readable()) {           
             char ch = serial0.uart_getc();
             gps_sentence[gps_chars_rxed++] = ch;
             if (ch == '\n' || gps_chars_rxed == SENTENCE_SIZE - 1) {
@@ -171,10 +171,13 @@ bool construct_message() {
         // Start message with message count
         itoa(rock.get_message_count(), message_buffer, 10);
         // Add a GPS reading
-        if (sizeof(message_buffer) - strlen(message_buffer) > strlen(gps_buffer) + 1) {
+        if (MAX_MESSAGE_SIZE - strlen(message_buffer) > strlen(gps_buffer) + 1) {
             strcat(message_buffer, ",");
             strcat(message_buffer, gps_buffer);
             return true;
+        } else {
+            puts("Message too long");
+            return false;            
         }
     }
     puts("Maximum message count");

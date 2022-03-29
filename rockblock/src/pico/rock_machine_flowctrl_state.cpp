@@ -1,7 +1,7 @@
 /*
     RockBLOCK Machine Flow Control State Implementation
     
-    Send a cancel flow control command with timeout
+    Turn off flow control
 */
 
 #include "rock_machine_state.hpp"

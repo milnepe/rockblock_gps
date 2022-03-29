@@ -1,7 +1,7 @@
 /*
     RockBLOCK Machine MO Buffer State Implementation
 
-    Send load MO buffer command with message payload and set timeout
+    Load MO buffer with ascii text message
     
 */
 
@@ -22,19 +22,11 @@ rock_machine_state* rock_machine_mobuffer_state::instance() {
 
 // Load MO buffer
 void rock_machine_mobuffer_state::send(rock_machine* rock) {
-    // Construct cmd string
-    char mo_buffer[MO_BUFFER_SIZE];
-    if (sizeof(mo_buffer) > strlen(rock->get_message()) + sizeof(SBDWT_CMD) + 1) {
-        strcpy(mo_buffer, SBDWT_CMD);
-        strcat(mo_buffer, rock->get_message());
-        strcat(mo_buffer, "\r");
- 
-        // Send the message
-        puts(mo_buffer); 
-        rock->write(mo_buffer);
-    } else {
-        puts("Message too long");
-    }
+
+    puts(SBDWT_CMD);
+    rock->write(SBDWT_CMD);
+    rock->write(rock->get_message());
+    rock->write("\r");
 
     // set a timeout
     rock->_timeout_id = add_alarm_in_ms(SBDWT_TIMEOUT, alarm_callback, NULL, false);

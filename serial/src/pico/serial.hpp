@@ -2,6 +2,7 @@
 #define SERIAL_HPP
 
 #include "pico/stdlib.h"
+#include "string.h"
 #include "hardware/uart.h"
 
 class serial {
@@ -73,6 +74,8 @@ public:
     void uart_puts(const char* s) {
         ::uart_puts(_uart, s);
     }    
-                 
+    void uart_write_blocking(const char* s) {
+        ::uart_write_blocking(_uart, (uint8_t*)s, strlen(s));
+    }                  
 };
 #endif
