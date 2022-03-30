@@ -35,7 +35,7 @@ class rock_machine {
         rock_machine(serial& uart, char* message);
         void start();        
         void send();
-        void send_ok(char*);
+        void send_ok(char* response);
         void repeat(); 
         void run();
         uint get_state_id();

@@ -73,9 +73,10 @@ public:
 
     void uart_puts(const char* s) {
         ::uart_puts(_uart, s);
-    }    
-    void uart_write_blocking(const char* s) {
-        ::uart_write_blocking(_uart, (uint8_t*)s, strlen(s));
+    }
+        
+    void uart_write_blocking(const uint8_t* src, size_t len) {
+        ::uart_write_blocking(_uart, src, len);
     }                  
 };
 #endif

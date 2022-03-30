@@ -33,7 +33,7 @@ void rock_machine::run() {
 
 void rock_machine::write(const char* s) {
     // _serial.uart_puts(s);
-    _serial.uart_write_blocking(s);    
+    _serial.uart_write_blocking((uint8_t*)s, strlen(s));    
 }
 
 void rock_machine::start() {
