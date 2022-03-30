@@ -12,6 +12,7 @@
 #include "hardware/irq.h"
 #include "pico/serial.hpp"
 #include "pico/rock_machine.hpp"
+#include "rockblock_secrets.h"
 
 #define UART1_ID uart1
 #define UART1_TX_PIN 4
@@ -31,7 +32,7 @@
 // GPS
 #define SENTENCE_SIZE 128
 #define RESPONSE_SIZE 32
-#define GPRMC_CHARACTERS 44
+#define GPRMC_CHARACTERS 37
 
 // RockBLOCK
 #define MAX_MESSAGE_SIZE 50  // 1 credit
@@ -43,16 +44,19 @@ void led_init();
 
 void switch_led(uint state);
 
-bool get_GPRMC(char* sentence_buf, char* gprmc_buf);
+bool get_gprmc(char* sentence_buf, char* gprmc_buf);
 
 static char message_buffer[MAX_MESSAGE_SIZE] = "Payload";
 static char rb_response_buffer[RESPONSE_SIZE];
 static int rd_chars_rxed = 0;
 
 static char gps_sentence[SENTENCE_SIZE]; // Raw NMEA buffer
-static char gps_buffer[GPRMC_CHARACTERS + 20];  // GPRMC buffer (64 bytes)
+static char gps_buffer[GPRMC_CHARACTERS + 1];
 static int gps_chars_rxed = 0;
 volatile bool gps_updated = false;
+
+// RockBLOCK serial number of device to send to
+const char* sendto = ROCKBLOCK_ID;
 
 bool on = true;
 
@@ -115,7 +119,7 @@ int main()
             if (ch == '\n' || gps_chars_rxed == SENTENCE_SIZE - 1) {
                 gps_sentence[gps_chars_rxed] = '\0';
                 gps_chars_rxed = 0;
-                print_fg = get_GPRMC(gps_sentence, gps_buffer);
+                print_fg = get_gprmc(gps_sentence, gps_buffer);
             }
             break;
         }
@@ -164,16 +168,22 @@ void on_uart1_rx() {
     }
 }
 
-// Construct message to be sent
+// Construct a message
+// If ROCKBLOCK_ID is defined then the message will be forwarded
+// to that device if it is in the same Delivery Group
+// otherwise just the GPS is sent instead
 bool construct_message() {
     uint i = rock.get_message_count();
     if (i < MAX_MESSAGE_COUNT) {
-        // Start message with message count
-        itoa(rock.get_message_count(), message_buffer, 10);
-        // Add a GPS reading
-        if (MAX_MESSAGE_SIZE - strlen(message_buffer) > strlen(gps_buffer) + 1) {
-            strcat(message_buffer, ",");
-            strcat(message_buffer, gps_buffer);
+        if (MAX_MESSAGE_SIZE - strlen(message_buffer) > strlen(gps_buffer)) {
+            // Add a GPS reading
+            if ((sendto != NULL)  && (sendto[0] == '\0')) {
+                    strcpy(message_buffer, gps_buffer);  
+            } else {
+                // Add RockBLOCK send to serial number
+                strcpy(message_buffer, sendto);
+                strcat(message_buffer, gps_buffer);
+            }
             return true;
         } else {
             puts("Message too long");
@@ -184,12 +194,12 @@ bool construct_message() {
     return false;
 }
 
-// Put a valid partial NMEA $GPRMC sentence into the buffer
+// Put a partial NMEA $GPRMC sentence into the buffer
 // Returns true if specific sentence is found
-bool get_GPRMC(char* sentence_buf, char* gprmc_buf) {
+bool get_gprmc(char* sentence_buf, char* gprmc_buf) {
     if(strstr(sentence_buf, "$GPRMC") != NULL) {
-        // memcpy(gprmc_buf, sentence_buf, strlen(sentence_buf) + 1);
-        memcpy(gprmc_buf, sentence_buf, GPRMC_CHARACTERS);        
+        memcpy(gprmc_buf, &sentence_buf[7], GPRMC_CHARACTERS);
+                        
         return true;    
     }
     return false;

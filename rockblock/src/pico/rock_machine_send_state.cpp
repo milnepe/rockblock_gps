@@ -29,7 +29,7 @@ void rock_machine_send_state::send(rock_machine* rock) {
 
     // send the message
     puts(SBDIX);
-    rock->write(SBDIX);
+    // rock->write(SBDIX);
 
 
     change_state(rock, rock_machine_send_wait_state::instance());

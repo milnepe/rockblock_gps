@@ -41,6 +41,7 @@ class rock_machine {
         uint get_state_id();
         void write(const char* s);
         const char* get_message();
+        void inc_message_count();
         uint get_message_count();
     private:
         friend class rock_machine_state;

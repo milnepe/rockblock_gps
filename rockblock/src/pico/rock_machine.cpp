@@ -62,6 +62,10 @@ const char* rock_machine::get_message() {
     return this->_message;
 }
 
+void rock_machine::inc_message_count() {
+    this->_message_count++;
+}
+
 uint rock_machine::get_message_count() {
     return this->_message_count;
 }

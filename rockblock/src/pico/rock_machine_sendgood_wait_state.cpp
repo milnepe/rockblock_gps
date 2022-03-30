@@ -20,7 +20,7 @@ rock_machine_state* rock_machine_sendgood_wait_state::instance() {
 // Change to next state on timeout
 void rock_machine_sendgood_wait_state::repeat(rock_machine* rock) {
     // Increament message counter
-    // rock->_message_count++;
+    rock->inc_message_count();
 
     change_state(rock, rock_machine_idle_wait_state::instance()); 
 }
