@@ -17,8 +17,11 @@
 #include "pico/serial.hpp"
 #include "rock_machine_state.hpp"
 
-#define ISBD_SUCCESS 0
-#define ISBD_PROTOCOL_ERROR 1
+#define ISBD_ERROR 0
+#define ISBD_OK 1
+#define ISBD_SENT 2
+#define ISBD_NOT_SENT 3
+#define ISBD_MAIL 4
 
 #define BAD_TIMEOUT 2000 // ms
 #define GOOD_TIMEOUT 2000 // ms

@@ -18,7 +18,7 @@ rock_machine_state* rock_machine_sendbad_wait_state::instance() {
 }
 
 void rock_machine_sendbad_wait_state::send_ok(rock_machine* rock, char* response) {
-    if(get_response(response, "OK") == ISBD_SUCCESS) {
+    if(get_response(response) == ISBD_OK) {
         puts(response);
         // Always let it timeout so we can see the failure 
         // cancel_alarm(rock->_timeout_id);

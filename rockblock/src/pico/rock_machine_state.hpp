@@ -17,7 +17,6 @@
 #include "pico/serial.hpp"
 #include "rock_machine.hpp"
 
-// #define MAX_MESSAGE_SIZE 50
 // #define BAD_TIMEOUT 2000 // ms
 // #define GOOD_TIMEOUT 2000 // ms
 

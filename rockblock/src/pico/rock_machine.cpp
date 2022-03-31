@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "rock_machine.hpp"
 
 volatile bool timeout_fired = false;
@@ -71,33 +72,32 @@ uint rock_machine::get_message_count() {
 }
 
 // Parse a response
-int get_response(char* response_buf, const char* string) {
-    if(strstr(response_buf, string) != NULL) {
-        return ISBD_SUCCESS;    
-    }
-    return ISBD_PROTOCOL_ERROR;
-}
+// int get_response(char* response_buf, const char* string) {
+//     if(strstr(response_buf, string) != NULL) {
+//         return ISBD_OK;    
+//     }
+//     return ISBD_ERROR;
+// }
 
 int get_response(char* response_buf) {
-    if(strstr(response_buf, "+SBDIX:") != NULL) {    
-    } else {
-        return ISBD_PROTOCOL_ERROR;
+    if(strstr(response_buf, "OK") != NULL) {
+        return ISBD_OK;
     }
-    return ISBD_SUCCESS;
-    // uint16_t moCode = 0, moMSN = 0, mtCode = 0, mtMSN = 0, mtLen = 0, mtRemaining = 0;
-// Returns xx,xxxxx,xx,xxxxx,xx,xxx
-// char sbdixResponseBuf[32];
-// send(F("AT+SBDIX\r"));
-// if (!waitForATResponse(sbdixResponseBuf, sizeof(sbdixResponseBuf), "+SBDIX: "))
-//       return cancelled() ? ISBD_CANCELLED : ISBD_PROTOCOL_ERROR;
-
-//    uint16_t *values[6] = { &moCode, &moMSN, &mtCode, &mtMSN, &mtLen, &mtRemaining };
-//    for (int i=0; i<6; ++i)
-//    {
-//       char *p = strtok(i == 0 ? response_buf : NULL, ", ");
-//       if (p == NULL)
-//          return ISBD_PROTOCOL_ERROR;
-//       *values[i] = atol(p);
-//    }
-//    return ISBD_SUCCESS;    
+    if(strstr(response_buf, "+SBDIX:") != NULL) {
+        puts(response_buf);
+        uint16_t moCode = 0, moMSN = 0, mtCode = 0, mtMSN = 0, mtLen = 0, mtRemaining = 0;
+        uint16_t *values[6] = { &moCode, &moMSN, &mtCode, &mtMSN, &mtLen, &mtRemaining };
+        for (int i=0; i<6; ++i) {
+            char *p = strtok(i == 0 ? response_buf : NULL, " ,");
+            if (p == NULL) {
+                return ISBD_ERROR;
+            }
+            if(i > 0) {
+            *values[i-1] = atol(p);
+            // puts(p);
+            }          
+        }
+        return moCode;
+    }
+    return ISBD_ERROR;    
 }

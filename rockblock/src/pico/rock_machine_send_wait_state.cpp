@@ -19,20 +19,18 @@ rock_machine_state* rock_machine_send_wait_state::instance() {
 
 // Change to next state
 void rock_machine_send_wait_state::send_ok(rock_machine* rock, char* response) {
-    if(get_response(response, "+SBDIX: 0,") == ISBD_SUCCESS) {
-        puts(response);
-        puts("Message sent");        
-        cancel_alarm(rock->_timeout_id);
+    int res = get_response(response);
+    cancel_alarm(rock->_timeout_id);                                    
+    // puts(response);
+    if(res == ISBD_SENT) {
+        // Increament message counter
+        // rock->inc_message_count();                 
         rock->_timeout_id = add_alarm_in_ms(GOOD_TIMEOUT, alarm_callback, NULL, false);                       
         change_state(rock, rock_machine_sendgood_wait_state::instance());
     }
     else {
-        if(get_response(response) == ISBD_SUCCESS) {
-        // if(get_response(response, "+SBDIX:") == ISBD_SUCCESS) {                
-            puts(response);
-            puts("Message failure");                                  
-            cancel_alarm(rock->_timeout_id);
-            rock->_timeout_id = add_alarm_in_ms(BAD_TIMEOUT, alarm_callback, NULL, false);                      
+        if(res > 0) {
+            rock->_timeout_id = add_alarm_in_ms(BAD_TIMEOUT, alarm_callback, NULL, false);                                                 
             change_state(rock, rock_machine_sendbad_wait_state::instance());
         }
     }  
