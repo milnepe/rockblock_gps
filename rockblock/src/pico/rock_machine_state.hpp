@@ -113,7 +113,8 @@ class rock_machine_mobuffer_wait_state : public rock_machine_state {
 
 class rock_machine_sendbad_wait_state : public rock_machine_state {
     public:  
-        static rock_machine_state* instance();       
+        static rock_machine_state* instance();
+        virtual void send_ok(rock_machine*, char* response);               
         virtual void repeat(rock_machine*);
     private:
         rock_machine_sendbad_wait_state() {_state_id = SENDBADWAIT;}
@@ -123,6 +124,7 @@ class rock_machine_sendbad_wait_state : public rock_machine_state {
 class rock_machine_sendgood_wait_state : public rock_machine_state {
     public:  
         static rock_machine_state* instance();
+        virtual void send_ok(rock_machine*, char* response);        
         virtual void repeat(rock_machine*);
     private:
         rock_machine_sendgood_wait_state() {_state_id = SENDGOODWAIT;}

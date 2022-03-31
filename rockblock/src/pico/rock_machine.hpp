@@ -20,7 +20,6 @@
 #define ISBD_SUCCESS 0
 #define ISBD_PROTOCOL_ERROR 1
 
-
 #define BAD_TIMEOUT 2000 // ms
 #define GOOD_TIMEOUT 2000 // ms
 

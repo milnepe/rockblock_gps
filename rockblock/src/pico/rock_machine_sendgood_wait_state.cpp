@@ -17,10 +17,19 @@ rock_machine_state* rock_machine_sendgood_wait_state::instance() {
     return _instance;
 }
 
+void rock_machine_sendgood_wait_state::send_ok(rock_machine* rock, char* response) {
+    if(get_response(response, "OK") == ISBD_SUCCESS) {
+        puts(response);
+        cancel_alarm(rock->_timeout_id);
+        // Increament message counter
+        rock->inc_message_count();        
+        // rock->_timeout_id = add_alarm_in_ms(GOOD_TIMEOUT, alarm_callback, NULL, false);                      
+        change_state(rock, rock_machine_idle_wait_state::instance());
+    }
+}
+
 // Change to next state on timeout
 void rock_machine_sendgood_wait_state::repeat(rock_machine* rock) {
-    // Increament message counter
-    rock->inc_message_count();
-
+    puts("Device error");
     change_state(rock, rock_machine_idle_wait_state::instance()); 
 }
