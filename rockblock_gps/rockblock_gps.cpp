@@ -175,6 +175,7 @@ void on_uart1_rx() {
 bool construct_message() {
     uint i = rock.get_message_count();
     if (i < MAX_MESSAGE_COUNT) {
+        message_buffer[0] = '\0';
         if (MAX_MESSAGE_SIZE - strlen(message_buffer) > strlen(gps_buffer)) {
             // Add a GPS reading
             if ((sendto != NULL)  && (sendto[0] == '\0')) {
