@@ -71,9 +71,9 @@ uint rock_machine::get_message_count() {
 }
 
 // Parse a response
-bool get_response(char* response_buf, const char* string) {
+int get_response(char* response_buf, const char* string) {
     if(strstr(response_buf, string) != NULL) {
-        return true;    
+        return 1;    
     }
-    return false;
+    return 0;
 }
