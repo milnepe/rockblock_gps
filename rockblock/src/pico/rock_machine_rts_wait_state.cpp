@@ -23,7 +23,6 @@ void rock_machine_rts_wait_state::send_ok(rock_machine* rock, char* response) {
     // if(get_response(response, "OK") == ISBD_OK) {
     if(get_response(response) == ISBD_OK) {        
         cancel_alarm(rock->_timeout_id);
-        puts(response);                              
         change_state(rock, rock_machine_flowctrl_state::instance());
     } 
 }

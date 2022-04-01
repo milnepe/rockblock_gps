@@ -20,8 +20,7 @@ rock_machine_state* rock_machine_sendgood_wait_state::instance() {
 void rock_machine_sendgood_wait_state::send_ok(rock_machine* rock, char* response) {
     if(get_response(response) == ISBD_OK) {
         cancel_alarm(rock->_timeout_id);
-        puts(response);   
-        // rock->_timeout_id = add_alarm_in_ms(GOOD_TIMEOUT, alarm_callback, NULL, false);                      
+        puts("Message sent");                     
         change_state(rock, rock_machine_idle_wait_state::instance());
     }
 }

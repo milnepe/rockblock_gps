@@ -12,7 +12,7 @@ volatile bool timeout_fired = false;
 
 // Setup a timeout callback
 int64_t alarm_callback(alarm_id_t id, void *user_data) {
-    puts("Timeout!");
+    // puts("Timeout!");
     timeout_fired = true;
     return 0;
 }
@@ -79,25 +79,27 @@ uint rock_machine::get_message_count() {
 //     return ISBD_ERROR;
 // }
 
-int get_response(char* response_buf) {
-    if(strstr(response_buf, "OK") != NULL) {
+int get_response(char* response) {   
+    if(strstr(response, "OK\r") != NULL) {
+        puts(response); 
         return ISBD_OK;
     }
-    if(strstr(response_buf, "+SBDIX:") != NULL) {
-        puts(response_buf);
-        uint16_t moCode = 0, moMSN = 0, mtCode = 0, mtMSN = 0, mtLen = 0, mtRemaining = 0;
-        uint16_t *values[6] = { &moCode, &moMSN, &mtCode, &mtMSN, &mtLen, &mtRemaining };
+    if(strstr(response, "+SBDIX:") != NULL) {
+        puts(response);
+        uint16_t sbdix_codes[6] = {0};
         for (int i=0; i<6; ++i) {
-            char *p = strtok(i == 0 ? response_buf : NULL, " ,");
-            if (p == NULL) {
-                return ISBD_ERROR;
-            }
+            char *p = strtok(i == 0 ? response : NULL, " ,");
             if(i > 0) {
-            *values[i-1] = atol(p);
-            // puts(p);
+                sbdix_codes[i-1] = atol(p);
             }          
         }
-        return moCode;
+        switch (sbdix_codes[0])
+        {
+            case 0 ... 2:
+                return ISBD_SENT;
+            default:
+                return ISBD_NOT_SENT;
+        }
     }
     return ISBD_ERROR;    
 }

@@ -88,9 +88,9 @@ int main()
 
     // Turn off FIFO's
     uart_set_fifo_enabled(UART1_ID, false);
-    int UART_IRQ = UART1_ID == uart1 ? UART1_IRQ : UART0_IRQ; 
 
     // Set up a RX interrupt uart 1
+    int UART_IRQ = UART1_ID == uart1 ? UART1_IRQ : UART0_IRQ;    
     irq_set_exclusive_handler(UART_IRQ, on_uart1_rx);
     irq_set_enabled(UART_IRQ, true);
     uart_set_irq_enables(UART1_ID, true, false); 
@@ -107,7 +107,7 @@ int main()
 
     sleep_ms(10000);  // let GPS / RockBLOCK warm up
 
-    puts("RockBLOCK GPS test\r\n");
+    puts("RockBLOCK GPS test\r\n");  
 
     while(1) {
         static bool print_fg = false;
@@ -160,10 +160,10 @@ void on_uart1_rx() {
     while (uart_is_readable(UART1_ID)) {
         char ch = uart_getc(UART1_ID);
         rb_response_buffer[rd_chars_rxed++] = ch;
-        if (ch == '\r' || rd_chars_rxed == RESPONSE_SIZE - 1) {
+        if (ch == '\r' || rd_chars_rxed == RESPONSE_SIZE) {      
             rd_chars_rxed = 0;
             rock.send_ok(rb_response_buffer);
-            memset(rb_response_buffer, 0, sizeof rb_response_buffer);
+            memset(rb_response_buffer, 0, sizeof rb_response_buffer);            
         }
     }
 }

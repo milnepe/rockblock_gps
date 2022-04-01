@@ -29,7 +29,7 @@
 int64_t alarm_callback(alarm_id_t id, void *user_data);
 
 int get_response(char* response_buf);
-int get_response(char* response_buf, const char* string);
+// int get_response(char* response_buf, const char* string);
 
 class rock_machine_state;
 
