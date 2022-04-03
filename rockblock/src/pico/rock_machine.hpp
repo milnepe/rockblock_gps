@@ -46,6 +46,7 @@ class rock_machine {
         void repeat(); 
         void run();
         uint get_state_id();
+        const char* get_state();
         void write(const char* s);
         const char* get_message();
         void inc_message_count();

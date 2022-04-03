@@ -21,7 +21,7 @@ rock_machine_state *rock_machine_idle_wait_state::instance()
 
 void rock_machine_idle_wait_state::send(rock_machine *rock)
 {
-    puts(state_str[this->_state_id]);
+    puts(rock->get_state());
 }
 
 void rock_machine_idle_wait_state::start(rock_machine *rock)

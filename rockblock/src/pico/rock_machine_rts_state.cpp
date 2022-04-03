@@ -24,7 +24,7 @@ rock_machine_state *rock_machine_rts_state::instance()
 // Send command, set timeout and change to next state
 void rock_machine_rts_state::send(rock_machine *rock)
 {
-    puts(state_str[this->_state_id]);
+    puts(rock->get_state());
 
     // Output message to be sent
     puts("Message:");

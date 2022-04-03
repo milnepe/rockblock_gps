@@ -21,7 +21,7 @@ rock_machine_state *rock_machine_send_state::instance()
 // Send command, set timeout and change to next state
 void rock_machine_send_state::send(rock_machine *rock)
 {
-    puts(state_str[this->_state_id]);
+    puts(rock->get_state());
 
     // Longer timeout to allow for satellite transmission
     rock->_timeout_id = add_alarm_in_ms(60000, alarm_callback, NULL, false);

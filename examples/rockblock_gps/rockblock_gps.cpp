@@ -108,7 +108,7 @@ int main()
 
     puts("RockBLOCK GPS test\r\n");
 
-    puts(state_str[rock.get_state_id()]);
+    puts(rock.get_state());
 
     while (1)
     {

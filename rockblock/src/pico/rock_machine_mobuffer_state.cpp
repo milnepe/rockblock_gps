@@ -22,7 +22,7 @@ rock_machine_state *rock_machine_mobuffer_state::instance()
 // Load MO buffer
 void rock_machine_mobuffer_state::send(rock_machine *rock)
 {
-    puts(state_str[this->_state_id]);
+    puts(rock->get_state());
 
     rock->write("AT+SBDWT=");
     rock->write(rock->get_message());

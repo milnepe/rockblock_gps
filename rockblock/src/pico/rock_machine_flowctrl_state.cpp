@@ -21,7 +21,7 @@ rock_machine_state *rock_machine_flowctrl_state::instance()
 // Send command, set timeout and change to next state
 void rock_machine_flowctrl_state::send(rock_machine *rock)
 {
-    puts(state_str[this->_state_id]);
+    puts(rock->get_state());
 
     rock->write("AT&K0\r");
 

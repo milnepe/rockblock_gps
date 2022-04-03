@@ -75,6 +75,11 @@ uint rock_machine::get_state_id()
     return _state->get_state_id();
 }
 
+const char* rock_machine::get_state()
+{
+    return state_str[_state->get_state_id()];
+}
+
 const char *rock_machine::get_message()
 {
     return this->_message;
