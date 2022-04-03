@@ -21,4 +21,4 @@ pico_sdk_init()
 add_subdirectory(serial)
 add_subdirectory(rockblock)
 add_subdirectory(examples)
-
+add_subdirectory(tests)

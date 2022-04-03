@@ -17,14 +17,18 @@ rock_machine_state* rock_machine_sendbad_wait_state::instance() {
     return _instance;
 }
 
-void rock_machine_sendbad_wait_state::send_ok(rock_machine* rock, char* response) {
-    if(get_response(response) == ISBD_OK) {
-        // Let it timeout                 
-    }
+// Send command, set timeout and change to next state
+void rock_machine_sendbad_wait_state::send(rock_machine *rock)
+{
+    puts(state_str[this->_state_id]);
+    
+    puts("Message Failure"); 
+    // Let it time out so we can see error state
+    rock->_timeout_id = add_alarm_in_ms(2000, alarm_callback, NULL, false);
+
 }
 
-// Change to next state on timeout
-void rock_machine_sendbad_wait_state::repeat(rock_machine* rock) {
-    puts("Message Failure");      
+// Change to idle
+void rock_machine_sendbad_wait_state::repeat(rock_machine* rock) {     
     change_state(rock, rock_machine_idle_wait_state::instance()); 
 }

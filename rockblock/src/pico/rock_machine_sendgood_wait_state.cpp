@@ -17,16 +17,19 @@ rock_machine_state* rock_machine_sendgood_wait_state::instance() {
     return _instance;
 }
 
-void rock_machine_sendgood_wait_state::send_ok(rock_machine* rock, char* response) {
-    if(get_response(response) == ISBD_OK) {
-        cancel_alarm(rock->_timeout_id);
-        puts("Message sent");                     
-        change_state(rock, rock_machine_idle_wait_state::instance());
-    }
+// Send command, set timeout and change to next state
+void rock_machine_sendgood_wait_state::send(rock_machine *rock)
+{
+    puts(state_str[this->_state_id]);
+
+        puts("Message sent");
+        // Increament message counter
+        // rock->inc_message_count();
+    // Let it time out to allow RockBLOCK to re-charge
+    rock->_timeout_id = add_alarm_in_ms(2000, alarm_callback, NULL, false);
 }
 
 // Change to next state on timeout
 void rock_machine_sendgood_wait_state::repeat(rock_machine* rock) {
-    puts("Device error");
     change_state(rock, rock_machine_idle_wait_state::instance()); 
 }

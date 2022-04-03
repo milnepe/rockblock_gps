@@ -22,13 +22,14 @@
 #define ISBD_SENT 2
 #define ISBD_NOT_SENT 3
 #define ISBD_MAIL 4
+#define ISBD_EMPTY 5
 
-#define BAD_TIMEOUT 2000 // ms
-#define GOOD_TIMEOUT 2000 // ms
+// #define BAD_TIMEOUT 2000 // ms
+// #define GOOD_TIMEOUT 2000 // ms
 
 int64_t alarm_callback(alarm_id_t id, void *user_data);
 
-int get_response(char* response_buf);
+int get_response(const uint8_t* response_buf);
 // int get_response(char* response_buf, const char* string);
 
 class rock_machine_state;
@@ -41,7 +42,7 @@ class rock_machine {
         rock_machine(serial& uart, char* message);
         void start();        
         void send();
-        void send_ok(char* response);
+        void send_ok(uint8_t* response);
         void repeat(); 
         void run();
         uint get_state_id();

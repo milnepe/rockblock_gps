@@ -8,7 +8,7 @@
 
 void rock_machine_state::start(rock_machine*) {}
 void rock_machine_state::send(rock_machine*) {}       
-void rock_machine_state::send_ok(rock_machine*, char* response) {}
+void rock_machine_state::send_ok(rock_machine*, uint8_t* response) {}
 void rock_machine_state::repeat(rock_machine*) {}
 
 // Change the machine state
