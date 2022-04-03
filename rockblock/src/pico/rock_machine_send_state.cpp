@@ -18,7 +18,7 @@ rock_machine_state *rock_machine_send_state::instance()
     return _instance;
 }
 
-// Send command, set timeout and change to next state
+// Send command and set timeout
 void rock_machine_send_state::send(rock_machine *rock)
 {
     puts(rock->get_state());
@@ -37,14 +37,19 @@ void rock_machine_send_state::send_ok(rock_machine *rock, uint8_t *response)
     printf("%u\n", res);
     if (res == ISBD_SENT)
     {
+        puts("Message sent");
         change_state(rock, rock_machine_sendgood_wait_state::instance());
     }
-    else
+    else if (res == ISBD_MAIL)
     {
-        if (res == ISBD_NOT_SENT)
-        {
-            change_state(rock, rock_machine_sendbad_wait_state::instance());
-        }
+        puts("Message sent");
+        change_state(rock, rock_machine_getmail_state::instance());
+    }
+
+    else if (res == ISBD_NOT_SENT)
+    {
+        puts("message not sent");
+        change_state(rock, rock_machine_sendbad_wait_state::instance());
     }
 }
 

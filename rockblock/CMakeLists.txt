@@ -11,6 +11,7 @@ add_library(
     src/pico/rock_machine_sendbad_wait_state.cpp
     src/pico/rock_machine_sendgood_wait_state.cpp
     src/pico/rock_machine_send_state.cpp
+    src/pico/rock_machine_getmail_state.cpp
 )
 
 target_include_directories(pico_rockmachine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")

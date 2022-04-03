@@ -49,8 +49,9 @@ class rock_machine {
         const char* get_state();
         void write(const char* s);
         const char* get_message();
-        void inc_message_count();
-        uint get_message_count();
+        void inc_mail_count();
+        void dec_mail_count();
+        uint get_mail_count();
     private:
         friend class rock_machine_state;
         void change_state(rock_machine_state*);      
@@ -58,6 +59,6 @@ class rock_machine {
         rock_machine_state* _state;
         serial& _serial;
         char* _message;
-        uint _message_count = 1;
+        uint _mail_count = 1;
 };
 #endif

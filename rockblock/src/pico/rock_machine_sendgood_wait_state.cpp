@@ -19,19 +19,27 @@ rock_machine_state *rock_machine_sendgood_wait_state::instance()
     return _instance;
 }
 
-// Send command, set timeout and change to next state
+// Set timeout to change state
 void rock_machine_sendgood_wait_state::send(rock_machine *rock)
 {
     puts(rock->get_state());
 
-    puts("Message sent");
     // Increament message counter
-    // rock->inc_message_count();
+    // rock->inc_mail_count();
     // Let it time out to allow RockBLOCK to re-charge
     rock->_timeout_id = add_alarm_in_ms(2000, alarm_callback, NULL, false);
 }
 
-// Change to next state on timeout
+// Get the OK
+void rock_machine_sendgood_wait_state::send_ok(rock_machine *rock, uint8_t *response)
+{
+    if (get_response(response) == ISBD_OK)
+    {
+        ; // Just get the OK
+    }
+}
+
+// Change to next state
 void rock_machine_sendgood_wait_state::repeat(rock_machine *rock)
 {
     change_state(rock, rock_machine_idle_wait_state::instance());

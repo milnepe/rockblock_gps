@@ -31,12 +31,12 @@
 
 // GPS
 #define SENTENCE_SIZE 128
-#define RESPONSE_SIZE 128
+#define RESPONSE_SIZE 256
 #define GPRMC_CHARACTERS 37
 
 // RockBLOCK
-#define MAX_MESSAGE_SIZE 50  // 1 credit
-#define MAX_MESSAGE_COUNT 10 // Limit number of messages
+#define MAX_MESSAGE_SIZE 50 // 1 credit
+#define MAX_MAIL_COUNT 10   // Limit number of messages
 
 bool construct_message();
 
@@ -143,7 +143,6 @@ int main()
         if (current_state != previous_state)
         {
             previous_state = current_state;
-            // puts(state_str[current_state]);
             switch_led(current_state);
         }
 
@@ -183,33 +182,27 @@ void on_uart1_rx()
 // otherwise just the GPS is sent instead
 bool construct_message()
 {
-    uint i = rock.get_message_count();
-    if (i < MAX_MESSAGE_COUNT)
+    message_buffer[0] = '\0';
+    if (MAX_MESSAGE_SIZE - strlen(message_buffer) > strlen(gps_buffer))
     {
-        message_buffer[0] = '\0';
-        if (MAX_MESSAGE_SIZE - strlen(message_buffer) > strlen(gps_buffer))
+        // Add a GPS reading
+        if ((sendto != NULL) && (sendto[0] == '\0'))
         {
-            // Add a GPS reading
-            if ((sendto != NULL) && (sendto[0] == '\0'))
-            {
-                strcpy(message_buffer, gps_buffer);
-            }
-            else
-            {
-                // Add RockBLOCK send to serial number
-                strcpy(message_buffer, sendto);
-                strcat(message_buffer, gps_buffer);
-            }
-            return true;
+            strcpy(message_buffer, gps_buffer);
         }
         else
         {
-            puts("Message too long");
-            return false;
+            // Add RockBLOCK send to serial number
+            strcpy(message_buffer, sendto);
+            strcat(message_buffer, gps_buffer);
         }
+        return true;
     }
-    puts("Maximum message count");
-    return false;
+    else
+    {
+        puts("Message too long");
+        return false;
+    }
 }
 
 // Put a partial NMEA $GPRMC sentence into the buffer
@@ -219,7 +212,6 @@ bool get_gprmc(char *sentence_buf, char *gprmc_buf)
     if (strstr(sentence_buf, "$GPRMC") != NULL)
     {
         memcpy(gprmc_buf, &sentence_buf[7], GPRMC_CHARACTERS);
-
         return true;
     }
     return false;
@@ -275,5 +267,9 @@ void switch_led(uint state)
         gpio_put(LED_RED, 1);
         gpio_put(LED_AMBER, 0);
         break;
+    case GETMAIL:
+        gpio_put(LED_GREEN, 0);
+        gpio_put(LED_RED, 0);
+        gpio_put(LED_AMBER, 1);
     }
 }
