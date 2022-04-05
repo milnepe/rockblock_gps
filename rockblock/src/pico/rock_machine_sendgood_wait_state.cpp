@@ -23,19 +23,15 @@ rock_machine_state *rock_machine_sendgood_wait_state::instance()
 void rock_machine_sendgood_wait_state::send(rock_machine *rock)
 {
     puts(rock->get_state());
-
-    // Increament message counter
-    // rock->inc_mail_count();
-    // Let it time out to allow RockBLOCK to re-charge
     rock->_timeout_id = add_alarm_in_ms(2000, alarm_callback, NULL, false);
 }
 
 // Get the OK
-void rock_machine_sendgood_wait_state::send_ok(rock_machine *rock, uint8_t *response)
+void rock_machine_sendgood_wait_state::send_ok(rock_machine *rock, char *response)
 {
     if (get_response(response) == ISBD_OK)
     {
-        ; // Just get the OK
+        ; // Just get the ack
     }
 }
 

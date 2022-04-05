@@ -67,8 +67,8 @@ public:
         return ::uart_set_baudrate(_uart, baudrate);  
     }
 
-    void uart_putc(char ch) {
-        ::uart_putc(_uart, ch);        
+    void uart_putc_raw(char ch) {
+        ::uart_putc_raw(_uart, ch);        
     }
 
     void uart_puts(const char* s) {

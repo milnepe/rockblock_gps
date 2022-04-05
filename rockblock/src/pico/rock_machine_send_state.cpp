@@ -30,11 +30,11 @@ void rock_machine_send_state::send(rock_machine *rock)
 }
 
 // Change to next state
-void rock_machine_send_state::send_ok(rock_machine *rock, uint8_t *response)
+void rock_machine_send_state::send_ok(rock_machine *rock, char *response)
 {
     cancel_alarm(rock->_timeout_id);
     uint16_t res = get_response(response);
-    printf("%u\n", res);
+    // printf("%u\n", res);
     if (res == ISBD_SENT)
     {
         puts("Message sent");

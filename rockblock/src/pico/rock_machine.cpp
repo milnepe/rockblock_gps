@@ -13,7 +13,6 @@ volatile bool timeout_fired = false;
 // Setup a timeout callback
 int64_t alarm_callback(alarm_id_t id, void *user_data)
 {
-    // puts("Timeout!");
     timeout_fired = true;
     return 0;
 }
@@ -43,7 +42,6 @@ void rock_machine::run()
 
 void rock_machine::write(const char *s)
 {
-    // _serial.uart_puts(s);
     _serial.uart_write_blocking((uint8_t *)s, strlen(s));
 }
 
@@ -56,7 +54,7 @@ void rock_machine::send()
 {
     _state->send(this);
 }
-void rock_machine::send_ok(uint8_t *response)
+void rock_machine::send_ok(char *response)
 {
     _state->send_ok(this, response);
 }
@@ -100,17 +98,9 @@ uint rock_machine::get_mail_count()
     return this->_mail_count;
 }
 
-// Parse a response
-// int get_response(char* response_buf, const char* string) {
-//     if(strstr(response_buf, string) != NULL) {
-//         return ISBD_OK;
-//     }
-//     return ISBD_ERROR;
-// }
-
-int get_response(const uint8_t *response)
+int get_response(const char *response)
 {
-    char buffer[256] = {'\0'};
+    char buffer[128] = {'\0'};
     memcpy(buffer, response, sizeof(buffer));
     if (buffer[0] == '\r')
     {

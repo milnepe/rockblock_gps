@@ -7,8 +7,6 @@
 
 #include "rock_machine_state.hpp"
 
-// #define RTS_CMD "AT\r"
-
 // Setup a singleton
 rock_machine_state *rock_machine_rts_state::_instance = 0;
 
@@ -32,12 +30,11 @@ void rock_machine_rts_state::send(rock_machine *rock)
 
     rock->write("AT\r");
 
-    // set a timeout
     rock->_timeout_id = add_alarm_in_ms(1000, alarm_callback, NULL, false);
 }
 
 // Change to next state
-void rock_machine_rts_state::send_ok(rock_machine *rock, uint8_t *response)
+void rock_machine_rts_state::send_ok(rock_machine *rock, char *response)
 {
     if (get_response(response) == ISBD_OK)
     {

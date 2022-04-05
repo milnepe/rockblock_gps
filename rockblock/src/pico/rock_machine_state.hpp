@@ -40,7 +40,7 @@ class rock_machine_state
 public:
     virtual void start(rock_machine *);
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
     state_id get_state_id() { return _state_id; }
 
@@ -66,7 +66,7 @@ class rock_machine_rts_state : public rock_machine_state
 public:
     static rock_machine_state *instance();
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
 
 private:
@@ -79,7 +79,7 @@ class rock_machine_flowctrl_state : public rock_machine_state
 public:
     static rock_machine_state *instance();
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
 
 private:
@@ -92,7 +92,7 @@ class rock_machine_mobuffer_state : public rock_machine_state
 public:
     static rock_machine_state *instance();
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
 
 private:
@@ -105,7 +105,7 @@ class rock_machine_sendbad_wait_state : public rock_machine_state
 public:
     static rock_machine_state *instance();
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
 
 private:
@@ -118,7 +118,7 @@ class rock_machine_sendgood_wait_state : public rock_machine_state
 public:
     static rock_machine_state *instance();
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
 
 private:
@@ -131,7 +131,7 @@ class rock_machine_send_state : public rock_machine_state
 public:
     static rock_machine_state *instance();
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
 
 private:
@@ -144,7 +144,7 @@ class rock_machine_getmail_state : public rock_machine_state
 public:
     static rock_machine_state *instance();
     virtual void send(rock_machine *);
-    virtual void send_ok(rock_machine *, uint8_t *response);
+    virtual void send_ok(rock_machine *, char *response);
     virtual void repeat(rock_machine *);
 
 private:

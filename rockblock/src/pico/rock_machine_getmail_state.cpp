@@ -29,12 +29,11 @@ void rock_machine_getmail_state::send(rock_machine *rock)
 }
 
 // Change to next state
-void rock_machine_getmail_state::send_ok(rock_machine *rock, uint8_t *response)
+void rock_machine_getmail_state::send_ok(rock_machine *rock, char *response)
 {
     if (get_response(response) == ISBD_OK)
     {
         cancel_alarm(rock->_timeout_id);
-        // rock->dec_mail_count();
         change_state(rock, rock_machine_sendgood_wait_state::instance());
     }
 }

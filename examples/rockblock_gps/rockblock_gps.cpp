@@ -31,7 +31,7 @@
 
 // GPS
 #define SENTENCE_SIZE 128
-#define RESPONSE_SIZE 256
+#define RESPONSE_SIZE 128
 #define GPRMC_CHARACTERS 37
 
 // RockBLOCK
@@ -46,9 +46,9 @@ void switch_led(uint state_id);
 
 bool get_gprmc(char *sentence_buf, char *gprmc_buf);
 
-static char message_buffer[MAX_MESSAGE_SIZE] = "Payload";
-static uint8_t rb_response_buffer[RESPONSE_SIZE];
-static int rd_chars_rxed = 0;
+static char message_buffer[MAX_MESSAGE_SIZE] = {0};
+static char response_buffer[RESPONSE_SIZE] = {0};
+static int rb_chars_rxed = 0;
 
 static char gps_sentence[SENTENCE_SIZE]; // Raw NMEA buffer
 static char gps_buffer[GPRMC_CHARACTERS + 1];
@@ -88,7 +88,11 @@ int main()
     serial1.init(RB_BAUD_RATE);
 
     // Turn off FIFO's
-    uart_set_fifo_enabled(UART1_ID, false);
+    // uart_set_fifo_enabled(UART1_ID, false);
+    serial1.uart_set_fifo_enabled(false);
+
+    // Don't convert linefeed to carriage returns
+    uart_set_translate_crlf(UART1_ID, false);
 
     // Set up a RX interrupt uart 1
     int UART_IRQ = UART1_ID == uart1 ? UART1_IRQ : UART0_IRQ;
@@ -165,13 +169,13 @@ void on_uart1_rx()
 {
     while (uart_is_readable(UART1_ID))
     {
-        uint8_t ch = uart_getc(UART1_ID);
-        rb_response_buffer[rd_chars_rxed++] = ch;
-        if (ch == '\r' || rd_chars_rxed == RESPONSE_SIZE)
+        char ch = uart_getc(UART1_ID);
+        response_buffer[rb_chars_rxed++] = ch;
+        if (ch == '\r' || rb_chars_rxed == RESPONSE_SIZE)
         {
-            rd_chars_rxed = 0;
-            rock.send_ok(rb_response_buffer);
-            memset(rb_response_buffer, 0, sizeof rb_response_buffer);
+            rock.send_ok(response_buffer);
+            memset(response_buffer, 0, sizeof response_buffer);
+            rb_chars_rxed = 0;
         }
     }
 }

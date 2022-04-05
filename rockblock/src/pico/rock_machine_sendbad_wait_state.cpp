@@ -29,11 +29,11 @@ void rock_machine_sendbad_wait_state::send(rock_machine *rock)
 }
 
 // Get the OK
-void rock_machine_sendbad_wait_state::send_ok(rock_machine *rock, uint8_t *response)
+void rock_machine_sendbad_wait_state::send_ok(rock_machine *rock, char *response)
 {
     if (get_response(response) == ISBD_OK)
     {
-        ; // Just get the OK
+        ; // Just get the ack
     }
 }
 

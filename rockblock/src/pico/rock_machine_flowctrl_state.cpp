@@ -29,7 +29,7 @@ void rock_machine_flowctrl_state::send(rock_machine *rock)
 }
 
 // Change to next state
-void rock_machine_flowctrl_state::send_ok(rock_machine *rock, uint8_t *response)
+void rock_machine_flowctrl_state::send_ok(rock_machine *rock, char *response)
 {
     if (get_response(response) == ISBD_OK)
     {
