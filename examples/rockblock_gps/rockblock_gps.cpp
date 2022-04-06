@@ -24,8 +24,8 @@
 #define OUTPUT_INTERVAL 5000 // ms
 
 #define BUTTON_PIN 15
-#define LED_AMBER 14
-#define LED_RED 16
+#define LED_AMBER 16
+#define LED_RED 17
 #define LED_GREEN 18
 #define LED_PIN PICO_DEFAULT_LED_PIN
 
@@ -105,6 +105,8 @@ int main()
     add_repeating_timer_ms(500, led_repeating_timer_callback, NULL, &led_timer);
 
     led_init();
+
+    gpio_pull_up(BUTTON_PIN);
 
     gpio_set_irq_enabled_with_callback(BUTTON_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
 
