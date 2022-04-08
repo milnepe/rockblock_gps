@@ -1,41 +1,61 @@
 /*
     RockBLOCK Machine Send State Implementation
-    
-    Send start extended session command with timeout
+
+    Start an extended SBD session
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-#include "rock_machine.hpp"
-
-#define SBDIX "AT+SBDIX\r"
-// #define SBDIX_TIMEOUT 10000  // session timeout (ms)
-#define SBDIX_TIMEOUT 60000  // production session timeout (ms)
-
+#include "rock_machine_state.hpp"
 
 // Setup a singleton
-rock_machine_state* rock_machine_send_state::_instance = 0;
+rock_machine_state *rock_machine_send_state::_instance = 0;
 
-rock_machine_state* rock_machine_send_state::instance() {
-    if(_instance == 0) {
+rock_machine_state *rock_machine_send_state::instance()
+{
+    if (_instance == 0)
+    {
         _instance = new rock_machine_send_state;
     }
     return _instance;
 }
 
-// Send command, set timeout and change to next state
-void rock_machine_send_state::send(rock_machine* rock) {
-    
-    // Set timeout
-    rock->_timeout_id = add_alarm_in_ms(SBDIX_TIMEOUT, alarm_callback, NULL, false);
+// Send command and set timeout
+void rock_machine_send_state::send(rock_machine *rock)
+{
+    puts(rock->get_state());
 
-    // send the message
-    // uart_puts(RB_UART_ID, SBDIX);
-    rock->write(SBDIX);
+    // Longer timeout to allow for satellite transmission
+    rock->_timeout_id = add_alarm_in_ms(60000, alarm_callback, NULL, false);
 
-    change_state(rock, rock_machine_send_wait_state::instance());
+    rock->write("AT+SBDIX\r");
+}
+
+// Change to next state
+void rock_machine_send_state::send_ok(rock_machine *rock, char *response)
+{
+    cancel_alarm(rock->_timeout_id);
+    uint16_t res = get_response(response);
+    // printf("%u\n", res);
+    if (res == ISBD_SENT)
+    {
+        puts("Message sent");
+        change_state(rock, rock_machine_sendgood_wait_state::instance());
+    }
+    else if (res == ISBD_MAIL)
+    {
+        puts("Message sent");
+        change_state(rock, rock_machine_getmail_state::instance());
+    }
+
+    else if (res == ISBD_NOT_SENT)
+    {
+        puts("message not sent");
+        change_state(rock, rock_machine_sendbad_wait_state::instance());
+    }
+}
+
+// Change to error state
+void rock_machine_send_state::repeat(rock_machine *rock)
+{
+    puts("Transmission timed out");
+    change_state(rock, rock_machine_sendbad_wait_state::instance());
 }

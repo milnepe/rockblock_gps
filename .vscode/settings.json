@@ -12,5 +12,9 @@
     "buildTarget" : {
       "visibility": "hidden"
                },
-     },
+    },
+    "files.associations": {
+      "cstdlib": "cpp",
+      "cstdio": "cpp"
+    },
 }

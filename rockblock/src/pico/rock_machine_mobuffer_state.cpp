@@ -1,52 +1,49 @@
 /*
     RockBLOCK Machine MO Buffer State Implementation
 
-    Send load MO buffer command with message payload and set timeout
-    
-*/
+    Load MO buffer with ascii text message
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
+*/
 
 #include "rock_machine.hpp"
 
-#define SBDWT "AT+SBDWT="
-#define SBDWT_TIMEOUT 10000  // message timeout (ms)
-
 // Setup a singleton
-rock_machine_state* rock_machine_mobuffer_state::_instance = 0;
+rock_machine_state *rock_machine_mobuffer_state::_instance = 0;
 
-rock_machine_state* rock_machine_mobuffer_state::instance() {
-    if(_instance == 0) {
+rock_machine_state *rock_machine_mobuffer_state::instance()
+{
+    if (_instance == 0)
+    {
         _instance = new rock_machine_mobuffer_state;
     }
     return _instance;
 }
 
-// Send the message and return to Idle
-void rock_machine_mobuffer_state::send(rock_machine* rock) {
-    // Construct text message
-    if(strlen(rock->message) < MAX_MESSAGE_SIZE) {
-        char text_message[MAX_MESSAGE_SIZE + 10] = {0};
-        strcpy(text_message, SBDWT);
-        strcat(text_message, rock->message);
-        strcat(text_message, "\r");
-        puts(text_message);
-        // Send the message
-        // uart_puts(RB_UART_ID, text_message);
-        rock->write(text_message);        
-    }
-    else {
-        puts(rock->message);
-        puts("Message length exceeded");  // Error condition STOP!!
-    }
+// Load MO buffer
+void rock_machine_mobuffer_state::send(rock_machine *rock)
+{
+    puts(rock->get_state());
 
-    // set a timeout
-    rock->_timeout_id = add_alarm_in_ms(SBDWT_TIMEOUT, alarm_callback, NULL, false);
+    rock->write("AT+SBDWT=");
+    rock->write(rock->get_message());
+    rock->write("\r");
 
-    // Change to next state
-    change_state(rock, rock_machine_mobuffer_wait_state::instance()); 
+    rock->_timeout_id = add_alarm_in_ms(1000, alarm_callback, NULL, false);
+}
+
+// Change to next state
+void rock_machine_mobuffer_state::send_ok(rock_machine *rock, char *response)
+{
+    if (get_response(response) == ISBD_OK)
+    {
+        cancel_alarm(rock->_timeout_id);
+        change_state(rock, rock_machine_send_state::instance());
+    }
+}
+
+// Change to error state
+void rock_machine_mobuffer_state::repeat(rock_machine *rock)
+{
+    puts("Cancel flowcontrol timeout");
+    change_state(rock, rock_machine_sendbad_wait_state::instance());
 }

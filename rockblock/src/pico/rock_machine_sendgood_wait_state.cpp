@@ -2,31 +2,41 @@
     RockBLOCK Machine Send Bad State Implementation
 
     Indicates successful transmission
-    
+
 */
 
-/**
- * Copyright (c) 2020 Peter Milne.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-#include "rock_machine.hpp"
+#include "rock_machine_state.hpp"
 
 // Setup a singleton
-rock_machine_state* rock_machine_sendgood_wait_state::_instance = 0;
+rock_machine_state *rock_machine_sendgood_wait_state::_instance = 0;
 
-rock_machine_state* rock_machine_sendgood_wait_state::instance() {
-    if(_instance == 0) {
+rock_machine_state *rock_machine_sendgood_wait_state::instance()
+{
+    if (_instance == 0)
+    {
         _instance = new rock_machine_sendgood_wait_state;
     }
     return _instance;
 }
 
-// Change to next state on timeout
-void rock_machine_sendgood_wait_state::repeat(rock_machine* rock) {
-    // Increament message counter
-    rock->message_count++;
+// Set timeout to change state
+void rock_machine_sendgood_wait_state::send(rock_machine *rock)
+{
+    puts(rock->get_state());
+    rock->_timeout_id = add_alarm_in_ms(2000, alarm_callback, NULL, false);
+}
 
-    change_state(rock, rock_machine_idle_wait_state::instance()); 
+// Get the OK
+void rock_machine_sendgood_wait_state::send_ok(rock_machine *rock, char *response)
+{
+    if (get_response(response) == ISBD_OK)
+    {
+        ; // Just get the ack
+    }
+}
+
+// Change to next state
+void rock_machine_sendgood_wait_state::repeat(rock_machine *rock)
+{
+    change_state(rock, rock_machine_idle_wait_state::instance());
 }

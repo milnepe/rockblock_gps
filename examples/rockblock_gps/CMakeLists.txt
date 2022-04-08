@@ -2,9 +2,9 @@
 add_executable(rockblock_gps rockblock_gps.cpp)
 
 pico_set_program_name(rockblock_gps "rockblock_gps")
-pico_set_program_version(rockblock_gps "0.1")
+pico_set_program_version(rockblock_gps "0.2")
 
-pico_enable_stdio_uart(rockblock_gps 1)
+pico_enable_stdio_uart(rockblock_gps 0)
 pico_enable_stdio_usb(rockblock_gps 1)
 
 
